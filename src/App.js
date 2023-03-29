@@ -3,18 +3,7 @@ import "./App.css";
 
 export default class App extends Component {
     state = {
-        todoData: [
-            {
-                id: "1",
-                title: "공부하기",
-                completed: true,
-            },
-            {
-                id: "2",
-                title: "청소하기",
-                completed: false,
-            },
-        ],
+        todoData: [],
         value: "",
     };
 
@@ -27,11 +16,11 @@ export default class App extends Component {
         float: "right",
     };
 
-    getStyle = () => {
+    getStyle = (completed) => {
         return {
             padding: "10px",
             borderBottom: "1px #ccc dotted",
-            textDecoration: "none",
+            textDecoration: completed ? "line-through" : "none",
         };
     };
 
@@ -62,6 +51,16 @@ export default class App extends Component {
         });
     };
 
+    handleCompleChange = (id) => {
+        let newTodoData = this.state.todoData.map((data) => {
+            if (data.id === id) {
+                data.completed = !data.completed;
+            }
+            return data;
+        });
+        this.setState({ todoData: newTodoData });
+    };
+
     render() {
         return (
             <div className="container">
@@ -71,12 +70,18 @@ export default class App extends Component {
                     </div>
 
                     {this.state.todoData.map((data) => (
-                        <div style={this.getStyle()} key={data.id}>
+                        <div
+                            style={this.getStyle(data.completed)}
+                            key={data.id}
+                        >
                             <p>
                                 <input
                                     type="checkbox"
                                     defaultChecked={false}
-                                ></input>
+                                    onChange={() =>
+                                        this.handleCompleChange(data.id)
+                                    }
+                                ></input>{" "}
                                 {data.title}
                                 <button
                                     style={this.btnStyle}

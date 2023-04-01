@@ -3,9 +3,14 @@ import "./App.css";
 import Form from "./components/Form";
 import Lists from "./components/Lists";
 
+const initialTodoData = localStorage.getItem("todoData")
+    ? JSON.parse(localStorage.getItem("todoData"))
+    : [];
+
 export default function App() {
     console.log("App Component");
-    const [todoData, setTodoData] = useState([]);
+
+    const [todoData, setTodoData] = useState(initialTodoData);
     const [value, setValue] = useState("");
 
     const handleClick = useCallback(
@@ -13,6 +18,7 @@ export default function App() {
             let newTodoData = todoData.filter((data) => data.id !== id);
             console.log("newTodoData", newTodoData);
             setTodoData(newTodoData);
+            localStorage.setItem("todoData", JSON.stringify(newTodoData));
         },
         [todoData]
     );
@@ -30,11 +36,16 @@ export default function App() {
 
         // 원래 있던 목록에 새로운 할 일 더해주기
         setTodoData((prev) => [...prev, newTodo]);
+        localStorage.setItem(
+            "todoData",
+            JSON.stringify([...todoData, newTodo])
+        );
         setValue("");
     };
 
     const handleRemoveClick = () => {
-        setTodoData([]);
+        const newTodoData = setTodoData([]);
+        localStorage.setTiem("todoData", JSON.stringify([]));
     };
 
     return (
